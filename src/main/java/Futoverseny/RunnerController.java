@@ -1,0 +1,73 @@
+package Futoverseny;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Controller
+public class RunnerController {
+
+    @Autowired
+    private RunnerRepository runnerRepository;
+    @Autowired
+    private RunnerService runnerService;
+    @Autowired
+    private ResultRepository resultRepository;
+    @Autowired
+    private CompetitionRepository competitionRepository;
+
+    @Autowired
+    private RunnerRestController runnerRestController;
+
+
+
+    @GetMapping("/runners")
+    public String getAllRunners(Model model) {
+        List<RunnerEntity> runners = runnerRepository.findAll();
+
+        model.addAttribute("runners", runners);
+        double averageAge = Math.round(runnerRestController.getAverageAge()*100.0)/100.0;
+        model.addAttribute("averageAge", averageAge);
+        return "runners";
+    }
+
+    @GetMapping("/runner/{id}")
+    public String getRunnerById(@PathVariable Long id, Model model) {
+        RunnerEntity runner = runnerRepository.findById(id).orElse(null);
+        RunnerService runnerService = new RunnerService(runnerRepository);
+        if (runner != null) {
+            model.addAttribute("runner", runner);
+            return "runner";
+        } else {
+            // handle error when runner is not found
+            return "error";
+        }
+    }
+
+    @PostMapping("/runner/{id}/addresult")
+    public String addLaptime(@PathVariable Long id, @ModelAttribute ResultEntity result) {
+        ResultEntity newResult = new ResultEntity();
+        RunnerEntity runner = runnerRepository.findById(id).orElse(null);
+        if (runner != null) {
+            newResult.setRunner(runner);
+            newResult.setCompetition(null);
+            newResult.setResult(result.getResult());
+            resultRepository.save(result);
+
+        } else {
+            // handle error when runner is not found
+        }
+        return "redirect:/runner/" + id;
+    }
+
+
+}
