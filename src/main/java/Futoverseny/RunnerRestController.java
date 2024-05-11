@@ -47,4 +47,10 @@ public class RunnerRestController {
         }
         return (double) totalAge / runners.size();
     }
+
+    @PostMapping("")
+    public RunnerEntity addRunner(@RequestBody RunnerEntity newRunner) {
+        return runnerRepository.save(newRunner);
+    }
+
 }

@@ -20,14 +20,13 @@ public class RunnerController {
     private ResultRepository resultRepository;
     @Autowired
     private CompetitionRepository competitionRepository;
-
     @Autowired
     private RunnerRestController runnerRestController;
 
 
 
     @GetMapping("/runners")
-    public String getAllRunners(Model model) {
+    public String getRunners(Model model) {
         List<RunnerEntity> runners = runnerRepository.findAll();
 
         model.addAttribute("runners", runners);
