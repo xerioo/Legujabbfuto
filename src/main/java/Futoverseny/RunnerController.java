@@ -54,17 +54,21 @@ public class RunnerController {
         }
     }
 
-    @PostMapping("/runner/{id}/addresult")
-    public String addResult(@PathVariable Long id, @ModelAttribute ResultEntity result) {
-        ResultEntity newResult = new ResultEntity();
+    @GetMapping("/runner/{id}/addrunres")
+    public String showAddResultForm(@PathVariable Long id, Model model) {
+        RunnerEntity runner = runnerRepository.findById(id).orElse(null);
+        model.addAttribute("runner", runner);
+        model.addAttribute("competitions", competitionRepository.findAll());
+        model.addAttribute("result", new ResultEntity());
+        return "addrunres";
+    }
+
+    @PostMapping("/runner/{id}/addrunres")
+    public String handleAddResultForm(@PathVariable Long id, @ModelAttribute ResultEntity result) {
         RunnerEntity runner = runnerRepository.findById(id).orElse(null);
         if (runner != null) {
-            newResult.setRunner(runner);
-            newResult.setCompetition(null);
-            newResult.setResult(result.getResult());
+            result.setRunner(runner);
             resultRepository.save(result);
-
-        } else {   return "error";
         }
         return "redirect:/runner/" + id;
     }

@@ -33,25 +33,6 @@ public class RunnerRestController {
         return runnerRepository.findAll();
     }
 
-    @PostMapping("/{id}/addresult")
-    public ResponseEntity addResult(@PathVariable Long rId, @RequestBody ResultRequest resultRequest) {
-        RunnerEntity runner = runnerRepository.findById(rId).orElse(null);
-        CompetitionEntity competition = competitionRepository.findById(1L).orElse(null);
-        if (runner != null) {
-            ResultEntity result = new ResultEntity();
-            result.setResult(resultRequest.getResult());
-            result.setRunner(runner);
-            result.setCompetition(competition);
-            resultRepository.save(result);
-
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Runner with ID " + rId + " not found");
-        }
-    }
-
-
-
     public static class ResultRequest {
         private int result;
 

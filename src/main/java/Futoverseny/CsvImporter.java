@@ -1,3 +1,5 @@
+//korábbi verzióból származik, a H2 adatbáziskezelőt használja, a mostani Spring Boot + JPA verzióban nincs rá szükség
+
 package Futoverseny;
 
 import java.io.BufferedReader;
