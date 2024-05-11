@@ -2,9 +2,11 @@ package Futoverseny;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 //import org.springframework.web.bind.annotation.ModelAttribute;
 //import org.springframework.web.bind.annotation.PathVariable;
 //import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +35,7 @@ public class CompetitionController {
         return "competitions";
     }
 
-    @GetMapping("/comp/{id}")
+    @GetMapping("/comp/{id}")       //ez a verseny eredményeinek megjelenítése
     public String showCompetitionResults(@PathVariable int id, Model model) {
         CompetitionEntity competition = competitionRepository.findById((long)id).orElse(null);
         model.addAttribute("competition", competition);
@@ -61,18 +63,18 @@ public class CompetitionController {
         return "comp";
     }
 
-    @GetMapping("/comp/{id}/addcompres")
+    @GetMapping("/comp/{id}/addcompres")    //új eredmény hozzáadásakor kiválasztjuk a versenyt és betöltjük a futók listáját
     public String showAddResultForm(@PathVariable int id, Model model) {
         CompetitionEntity competition = competitionRepository.findById((long)id).orElse(null);
-        model.addAttribute("competition", competition);                  //adott a verseny
-        model.addAttribute("runners", runnerRepository.findAll());      //és listából kiválasztható a futó
+        model.addAttribute("competition", competition);
+        model.addAttribute("runners", runnerRepository.findAll());
         model.addAttribute("result", new ResultEntity());
         return "addcompres";
     }
 
     @PostMapping("/comp/{id}/addcompres")
     public String handleAddResultForm(@PathVariable int id, @ModelAttribute ResultEntity result) {
-        ResultEntity newResult = new ResultEntity();
+        ResultEntity newResult = new ResultEntity();    //az új eredmény létrehozása, hogy új id-t kapjon
         newResult.setCompetition(competitionRepository.findById((long) id).orElse(null));
         newResult.setRunner(result.getRunner());
         newResult.setResult(result.getResult());
@@ -80,4 +82,30 @@ public class CompetitionController {
         return "redirect:/comp/" + id;
     }
 
+    @GetMapping("/addcompetition")
+    public String showAddCompetitionForm(Model model) {
+        model.addAttribute("competition", new CompetitionEntity());
+    return "addcompetition";
+    }
+
+    @PostMapping("/addcompetition")
+    public String handleAddCompetitionForm(@ModelAttribute CompetitionEntity competition, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (competition.getLength() <= 0) {
+            redirectAttributes.addFlashAttribute("error", "Ide egy pozitív számot kell beírni!");
+            return "redirect:/addcompetition";
+        }
+        if (competition.getCompName().length() < 3) {
+            redirectAttributes.addFlashAttribute("error", "A verseny neve legalább 3 karakter hosszú legyen!");
+            return "redirect:/addcompetition";
+        }
+        if (competitionRepository.findByCompName(competition.getCompName()) != null) {
+            redirectAttributes.addFlashAttribute("error", "Ez a verseny már létezik!");
+            return "redirect:/addcompetition";
+        }
+        CompetitionEntity newCompetition = new CompetitionEntity();
+        newCompetition.setCompName(competition.getCompName());
+        newCompetition.setLength(competition.getLength());
+        competitionRepository.save(newCompetition);
+    return "redirect:/competitions";
+    }
 }

@@ -2,12 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Versenyeredmény hozzáadása</title>
+    <title>G9PGBI</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container">
-    <h1>Futó: <span th:text="${runner.runnerName}"></span></h1>
+    <h1>Versenyeredmény hozzáadása</h1>
+    <h2>Futó: <span th:text="${runner.runnerName}"></span></h2>
     <form action="#" th:action="@{/runner/{id}/addrunres(id=${runner.runnerId})}" th:object="${result}" method="post">
         <div class="form-group">
             <label for="competition">Verseny</label>

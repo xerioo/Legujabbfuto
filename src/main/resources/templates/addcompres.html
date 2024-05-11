@@ -2,12 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Eredmény hozzáadása</title>
+    <title>G9PGBI</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container">
-    <h1>A verseny: <span th:text="${competition.compName}"></span></h1>
+    <h1>Eredmény hozzáadása</h1>
+    <h2>A verseny: <span th:text="${competition.compName}"></span></h2>
     <form action="#" th:action="@{/comp/{id}/addcompres(id=${competition.compId})}" th:object="${result}" method="post">
         <div class="form-group">
             <label for="runner">Futó</label>
