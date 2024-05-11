@@ -42,6 +42,18 @@ public class CompetitionController {
                     .stream()
                     .sorted(Comparator.comparing(ResultEntity::getResult))
                     .collect(Collectors.toList());
+            if (!sortedResults.isEmpty()) {
+                long totalTime = 0;
+                for (ResultEntity result : sortedResults) {
+                    totalTime += result.getResult();
+                }
+                double average = Math.round(((double) totalTime / sortedResults.size())*100)/100.0;
+                model.addAttribute("average", average);
+                model.addAttribute("averagehhmm", (String.format("%02d óra %02d perc", (int)average / 60, (int)average % 60)));
+            } else {
+                model.addAttribute("average", 0);
+                model.addAttribute("averagehhmm", "00:00");
+            }
             model.addAttribute("results", sortedResults);
         } else {
             model.addAttribute("results", List.of());

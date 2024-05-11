@@ -25,6 +25,7 @@
         </tbody>
     </table>
     <hr>
+    <h3 th:text="'A verseny eredményeinek átlaga: ' + ${average} + ' perc, vagyis ' + ${averagehhmm}"></h3>
     <a th:href="@{/comp/{id}/addcompres(id=${competition.compId})}" class="btn btn-secondary">Új eredmény</a>
     <a href="/competitions" class="btn btn-primary">Vissza</a>
 </div>
