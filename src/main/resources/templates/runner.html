@@ -8,45 +8,24 @@
 <body>
 <div class="container">
     <h1 th:text="${runner.runnerName}"></h1>
-    <h3> Shoe type: <b th:text="${shoeName}"></b></h3>
     <hr>
     <table class="table">
-        <tbody>
+    <thead>
         <tr>
-            <th>Runner ID:</th>
-            <td th:text="${runner.runnerId}"></td>
+            <th>Competition</th>
+            <th>Time</th>
         </tr>
-        <tr>
-            <th>Average Pace:</th>
-            <td th:text="${runner.averagePace}"></td>
+    </thead>
+    <tbody>
+        <tr th:each="result : ${results}">
+            <td th:text="${result.competition.compName}"></td>
+            <td th:text="${result.result}"></td>
         </tr>
-        <tr>
-            <th>Average Lap Time:</th>
-            <td th:text="${averageLaptime}"></td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Lap Number</th>
-                        <th>Lap Time</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="laptime : ${runner.laptimes}">
-                        <td align="right" th:text="${laptime.lapNumber}"></td>
-                        <td align="right" th:text="${laptime.timeSeconds} + ' seconds'"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-        </tbody>
+    </tbody>
     </table>
     <hr>
-    <a th:href="@{/runner/{id}/addlaptime(id=${runner.runnerId})}" class="btn btn-secondary">Add Laptime</a>
-    <a href="/runners" class="btn btn-primary">Back to Home</a>
+    <a th:href="@{/runner/{id}/addlaptime(id=${runner.runnerId})}" class="btn btn-secondary">Új eredmény</a>
+    <a href="/runners" class="btn btn-primary">Vissza</a>
 </div>
 </body>
 </html>

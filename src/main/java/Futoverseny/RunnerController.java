@@ -41,20 +41,21 @@ public class RunnerController {
     }
 
     @GetMapping("/runner/{id}")
-    public String getRunnerById(@PathVariable Long id, Model model) {
-        RunnerEntity runner = runnerRepository.findById(id).orElse(null);
+    public String getRunnerById(@PathVariable int id, Model model) {
+        RunnerEntity runner = runnerRepository.findById((long)id).orElse(null);
         RunnerService runnerService = new RunnerService(runnerRepository);
         if (runner != null) {
             model.addAttribute("runner", runner);
+            List<ResultEntity> results = resultRepository.findByRunner(runner);
+            model.addAttribute("results", results);
             return "runner";
         } else {
-            // handle error when runner is not found
             return "error";
         }
     }
 
     @PostMapping("/runner/{id}/addresult")
-    public String addLaptime(@PathVariable Long id, @ModelAttribute ResultEntity result) {
+    public String addResult(@PathVariable Long id, @ModelAttribute ResultEntity result) {
         ResultEntity newResult = new ResultEntity();
         RunnerEntity runner = runnerRepository.findById(id).orElse(null);
         if (runner != null) {
@@ -63,8 +64,7 @@ public class RunnerController {
             newResult.setResult(result.getResult());
             resultRepository.save(result);
 
-        } else {
-            // handle error when runner is not found
+        } else {   return "error";
         }
         return "redirect:/runner/" + id;
     }

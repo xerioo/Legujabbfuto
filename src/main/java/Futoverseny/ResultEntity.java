@@ -1,6 +1,7 @@
 package Futoverseny;
 
 import jakarta.persistence.*;
+import java.time.Duration;
 
 @Entity
 public class ResultEntity {
@@ -14,6 +15,7 @@ public class ResultEntity {
     @JoinColumn(name = "compId")
     private CompetitionEntity competition;
     private long result;
+    private String formattedResult;
 
     public ResultEntity(RunnerEntity runner, CompetitionEntity competition, long result) {
         this.runner = runner;
@@ -22,7 +24,10 @@ public class ResultEntity {
     }
 
     public ResultEntity() {
+    }
 
+    public String getFormattedResult() {
+        return formattedResult;
     }
 
     public int getId() {
@@ -54,6 +59,7 @@ public class ResultEntity {
     }
 
     public void setResult(long result) {
+        this.formattedResult = String.format("%02d:%02d", result / 60, result % 60);
         this.result = result;
     }
 }
