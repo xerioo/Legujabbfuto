@@ -2,10 +2,13 @@ package Futoverseny;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+//import org.springframework.web.bind.annotation.ModelAttribute;
+//import org.springframework.web.bind.annotation.PathVariable;
+//import org.springframework.web.bind.annotation.PostMapping;
 
-import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,10 +17,13 @@ import java.util.stream.Collectors;
 public class CompetitionController {
 
     private final CompetitionRepository competitionRepository;
+    private final RunnerRepository runnerRepository;
     private final ResultRepository resultRepository;
 
-    public CompetitionController(CompetitionRepository competitionRepository, ResultRepository resultRepository) {
+    public CompetitionController(CompetitionRepository competitionRepository, RunnerRepository runnerRepository,
+                                 ResultRepository resultRepository) {
         this.competitionRepository = competitionRepository;
+        this.runnerRepository = runnerRepository;
         this.resultRepository = resultRepository;
     }
 
@@ -28,8 +34,8 @@ public class CompetitionController {
     }
 
     @GetMapping("/comp/{id}")
-    public String showCompetitionResults(@PathVariable Long id, Model model) {
-        CompetitionEntity competition = competitionRepository.findById(id).orElse(null);
+    public String showCompetitionResults(@PathVariable int id, Model model) {
+        CompetitionEntity competition = competitionRepository.findById((long)id).orElse(null);
         model.addAttribute("competition", competition);
         if (competition != null) {
             List<ResultEntity> sortedResults = resultRepository.findByCompetition(competition)
@@ -41,6 +47,28 @@ public class CompetitionController {
             model.addAttribute("results", List.of());
         }
         return "comp";
+    }
+
+    @GetMapping("/comp/{id}/addcompres")
+    public String showAddResultForm(@PathVariable int id, Model model) {
+        CompetitionEntity competition = competitionRepository.findById((long)id).orElse(null);
+        model.addAttribute("competition", competition);
+        model.addAttribute("runners", runnerRepository.findAll());
+        model.addAttribute("result", new ResultEntity());
+        return "addcompres";
+    }
+
+    @PostMapping("/comp/{id}/addcompres")
+    public ResponseEntity handleAddResultForm(@PathVariable int id, @ModelAttribute ResultEntity result) {
+        CompetitionEntity competition = competitionRepository.findById((long)id).orElse(null);
+        if (competition != null) {
+            result.setCompetition(competition);
+            resultRepository.save(result);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nincs ilyen verseny:" + id + "!");
+        }
+//        return "redirect:/comp/" + id;
     }
 
 }

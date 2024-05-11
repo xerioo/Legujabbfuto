@@ -49,4 +49,8 @@ public class RunnerEntity {
         this.age = age;
     }
 
+    @Override
+    public String toString() {
+        return String.valueOf(runnerId);
+    }
 }
