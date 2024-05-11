@@ -2,8 +2,6 @@ package Futoverseny;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +13,6 @@ public class RunnerRestController {
     @Autowired
     private CompetitionRepository competitionRepository;
     private RunnerRepository runnerRepository;
-    private ResultRepository resultRepository;
 
     @Autowired
     public RunnerRestController(RunnerRepository runnerRepository, CompetitionRepository competitionRepository) {

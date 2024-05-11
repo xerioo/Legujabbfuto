@@ -3,15 +3,11 @@ package Futoverseny;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-//import org.springframework.web.bind.annotation.ModelAttribute;
-//import org.springframework.web.bind.annotation.PathVariable;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class RunnerController {
@@ -76,5 +72,33 @@ public class RunnerController {
         return "redirect:/runner/" + id;
     }
 
+    @GetMapping("/addrunner")
+    public String showAddRunnerForm(Model model) {
+        model.addAttribute("runner", new RunnerEntity());
+        return "addrunner";
+
+    }
+
+    @PostMapping("/addrunner")
+    public String handleAddRunnerForm(@ModelAttribute RunnerEntity runner, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (runner.getAge() <= 2 || runner.getAge() > 120) {
+            redirectAttributes.addFlashAttribute("error", "Ennyi idősen nem lehet futni.");
+            return "redirect:/addrunner";
+        }
+        if (runner.getRunnerName().length() < 3) {
+            redirectAttributes.addFlashAttribute("error", "A futó neve túl rövid.");
+            return "redirect:/addrunner";
+        }
+        if (runnerRepository.findByRunnerName(runner.getRunnerName()) != null) {
+            redirectAttributes.addFlashAttribute("error", "Ez a futó már létezik.");
+            return "redirect:/addrunner";
+        }
+        RunnerEntity newRunner = new RunnerEntity();
+        newRunner.setRunnerName(runner.getRunnerName());
+        newRunner.setAge(runner.getAge());
+        newRunner.setGender(runner.getGender());
+        runnerRepository.save(newRunner);
+        return "redirect:/runners";
+    }
 
 }

@@ -25,8 +25,12 @@ public class RunnerEntity {
         return runnerName;
     }
 
-    public String getGender() {
+    public String getGenderName() {
         return genderTypes[this.gender];
+    }
+
+    public int getGender() {
+        return gender;
     }
 
     public void setRunnerId(int runnerId) {
@@ -41,7 +45,7 @@ public class RunnerEntity {
         this.gender = gender;
     }
 
-    public long getAge() {
+    public int getAge() {
         return age;
     }
 
