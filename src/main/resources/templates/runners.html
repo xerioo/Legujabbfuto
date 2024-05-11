@@ -24,7 +24,7 @@
                 <td th:text="${runnerEntry.runnerId}"></td>
                 <td th:text="${runnerEntry.runnerName}"></td>
                 <td th:text="${runnerEntry.age}"></td>
-                <td th:text="${runnerEntry.gender}"></td>
+                <td th:text="${runnerEntry.getGender}"></td>
                 <td>
                     <a th:href="@{/runner/{id}(id=${runnerEntry.runnerId})}" class="btn btn-primary">Katt</a>
                 </td>

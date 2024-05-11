@@ -7,7 +7,9 @@
 </head>
 <body>
 <div class="container">
-    <h2>A kiválasztott verseny eredményei</h2>
+    <h2 th:text="'A kiválasztott verseny: ' + ${competition.compName}"></h2>
+    <h3>Eredményei:</h3>
+    <hr>
     <table class="table table-striped">
         <thead>
            <tr>
@@ -22,6 +24,9 @@
             </tr>
         </tbody>
     </table>
+    <hr>
+    <a th:href="@{/comp/{id}/addcompres(id=${competition.compId})}" class="btn btn-secondary">Új eredmény</a>
+    <a href="/competitions" class="btn btn-primary">Vissza</a>
 </div>
 </body>
 </html>

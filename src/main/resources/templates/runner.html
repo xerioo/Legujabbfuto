@@ -19,12 +19,12 @@
     <tbody>
         <tr th:each="result : ${results}">
             <td th:text="${result.competition.compName}"></td>
-            <td th:text="${result.result}"></td>
+            <td th:text="${result.formattedResult}"></td>
         </tr>
     </tbody>
     </table>
     <hr>
-    <a th:href="@{/runner/{id}/addlaptime(id=${runner.runnerId})}" class="btn btn-secondary">Új eredmény</a>
+    <a th:href="@{/runner/{id}/addrunres(id=${runner.runnerId})}" class="btn btn-secondary">Új eredmény</a>
     <a href="/runners" class="btn btn-primary">Vissza</a>
 </div>
 </body>

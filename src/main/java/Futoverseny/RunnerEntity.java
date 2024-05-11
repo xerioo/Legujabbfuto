@@ -11,6 +11,9 @@ public class RunnerEntity {
     private int age;
     private int gender;
 
+    public static final String[] genderTypes = {"n/a", "férfi", "nő"}; //az int 0, 1, 2 értékhez tartozó adatok
+
+
     public RunnerEntity() {
     }
 
@@ -22,8 +25,8 @@ public class RunnerEntity {
         return runnerName;
     }
 
-    public long getGender() {
-        return gender;
+    public String getGender() {
+        return genderTypes[this.gender];
     }
 
     public void setRunnerId(int runnerId) {
