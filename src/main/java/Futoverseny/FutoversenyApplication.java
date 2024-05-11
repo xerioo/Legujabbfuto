@@ -10,7 +10,5 @@ public class FutoversenyApplication {
 		SpringApplication.run(FutoversenyApplication.class, args);
 	}
 
-	CsvImporter beolvas = new CsvImporter();
-//	beolvas.letsLoadIt();
 
 }

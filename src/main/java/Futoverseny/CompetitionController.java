@@ -25,19 +25,19 @@ public class CompetitionController {
         this.resultRepository = resultRepository;
     }
 
-    @GetMapping("/competitions")
+    @GetMapping("/competitions")    //az összes verseny megjelenítése
     public String showCompetitions(Model model) {
         model.addAttribute("competitions", competitionRepository.findAll());
         return "competitions";
     }
 
-    @GetMapping("/comp/{id}")       //ez a verseny eredményeinek megjelenítése
+    @GetMapping("/comp/{id}")       //kiválasztott verseny eredményeinek megjelenítése
     public String showCompetitionResults(@PathVariable int id, Model model) {
         CompetitionEntity competition = competitionRepository.findById((long)id).orElse(null);
         model.addAttribute("competition", competition);
         if (competition != null) {
             List<ResultEntity> sortedResults = resultRepository.findByCompetition(competition)
-                    .stream()
+                    .stream()                                                           //az eredmények rendezése növekvő sorrendbe
                     .sorted(Comparator.comparing(ResultEntity::getResult))
                     .collect(Collectors.toList());
             if (!sortedResults.isEmpty()) {
@@ -45,11 +45,11 @@ public class CompetitionController {
                 for (ResultEntity result : sortedResults) {
                     totalTime += result.getResult();
                 }
-                double average = Math.round(((double) totalTime / sortedResults.size())*100)/100.0;
-                model.addAttribute("average", average);
+                double average = Math.round(((double) totalTime / sortedResults.size())*100)/100.0; //átlag kerekítése 2 tizedesre
+                model.addAttribute("average", average);                     //és átadása perc, majd óra:perc formátumban
                 model.addAttribute("averagehhmm", (String.format("%02d óra %02d perc", (int)average / 60, (int)average % 60)));
             } else {
-                model.addAttribute("average", 0);
+                model.addAttribute("average", 0);               //ha nincs eredmény, akkor 0 az átlag
                 model.addAttribute("averagehhmm", "00:00");
             }
             model.addAttribute("results", sortedResults);
@@ -70,7 +70,7 @@ public class CompetitionController {
 
     @PostMapping("/comp/{id}/addcompres")
     public String handleAddResultForm(@PathVariable int id, @ModelAttribute ResultEntity result) {
-        ResultEntity newResult = new ResultEntity();    //az új eredmény létrehozása, hogy új id-t kapjon
+        ResultEntity newResult = new ResultEntity();        //az új eredmény példány létrehozása, hogy új ID-t kapjon
         newResult.setCompetition(competitionRepository.findById((long) id).orElse(null));
         newResult.setRunner(result.getRunner());
         newResult.setResult(result.getResult());
@@ -85,7 +85,9 @@ public class CompetitionController {
     }
 
     @PostMapping("/addcompetition")
-    public String handleAddCompetitionForm(@ModelAttribute CompetitionEntity competition, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String handleAddCompetitionForm(@ModelAttribute CompetitionEntity competition, BindingResult bindingResult,
+                                           RedirectAttributes redirectAttributes) {
+        //validálás
         if (competition.getLength() <= 0) {
             redirectAttributes.addFlashAttribute("error", "Ide egy pozitív számot kell beírni!");
             return "redirect:/addcompetition";
@@ -98,7 +100,7 @@ public class CompetitionController {
             redirectAttributes.addFlashAttribute("error", "Ez a verseny már létezik!");
             return "redirect:/addcompetition";
         }
-        CompetitionEntity newCompetition = new CompetitionEntity();
+        CompetitionEntity newCompetition = new CompetitionEntity();     //új verseny példány létrehozása szintén az ID miatt
         newCompetition.setCompName(competition.getCompName());
         newCompetition.setLength(competition.getLength());
         competitionRepository.save(newCompetition);

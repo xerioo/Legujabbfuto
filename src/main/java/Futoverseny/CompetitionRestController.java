@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// http requesttel elérhetőek az alábbi címen az alábbi végpontok
 @RestController
 @RequestMapping("/api/v1/competition")
 public class CompetitionRestController {

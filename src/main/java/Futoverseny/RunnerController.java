@@ -15,22 +15,18 @@ public class RunnerController {
     @Autowired
     private RunnerRepository runnerRepository;
     @Autowired
-    private RunnerService runnerService;
-    @Autowired
     private ResultRepository resultRepository;
     @Autowired
     private CompetitionRepository competitionRepository;
     @Autowired
     private RunnerRestController runnerRestController;
 
-
-
     @GetMapping("/runners")
     public String getRunners(Model model) {
         List<RunnerEntity> runners = runnerRepository.findAll();
 
         model.addAttribute("runners", runners);
-        double averageAge = Math.round(runnerRestController.getAverageAge()*100.0)/100.0;
+        double averageAge = Math.round(getAverageAge()*100.0)/100.0;
         model.addAttribute("averageAge", averageAge);
         return "runners";
     }
@@ -38,7 +34,6 @@ public class RunnerController {
     @GetMapping("/runner/{id}")
     public String getRunnerById(@PathVariable int id, Model model) {
         RunnerEntity runner = runnerRepository.findById((long)id).orElse(null);
-        RunnerService runnerService = new RunnerService(runnerRepository);
         if (runner != null) {
             model.addAttribute("runner", runner);
             List<ResultEntity> results = resultRepository.findByRunner(runner);
@@ -62,10 +57,10 @@ public class RunnerController {
     public String handleAddResultForm(@PathVariable Long id, @ModelAttribute ResultEntity result) {
         ResultEntity newResult = new ResultEntity();
         RunnerEntity runner = runnerRepository.findById(id).orElse(null);
-        if (runner != null) {
-            newResult.setRunner(runner);
-            newResult.setCompetition(result.getCompetition());
-            newResult.setResult(result.getResult());
+        if (runner != null) {                                           //itt megspóroltam a beírt adatok ellenőrzését,
+            newResult.setRunner(runner);                                //ez további fejlesztési lehetőség
+            newResult.setCompetition(result.getCompetition());          //pl. ugyanazt a versenyt csak egyszer futhatja le
+            newResult.setResult(result.getResult());                    //az idő ne lehessen negatív stb.
             resultRepository.save(newResult);
         }
         return "redirect:/runner/" + id;
@@ -75,7 +70,6 @@ public class RunnerController {
     public String showAddRunnerForm(Model model) {
         model.addAttribute("runner", new RunnerEntity());
         return "addrunner";
-
     }
 
     @PostMapping("/addrunner")
@@ -100,4 +94,13 @@ public class RunnerController {
         return "redirect:/runners";
     }
 
+    public double getAverageAge() {
+        List<RunnerEntity> runners = runnerRepository.findAll();
+        double totalAge = 0;
+        for (RunnerEntity runner : runners) {
+            totalAge += runner.getAge();
+        }
+        return (double) totalAge / runners.size();
+    }
+    
 }
