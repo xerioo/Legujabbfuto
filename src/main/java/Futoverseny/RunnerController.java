@@ -57,18 +57,21 @@ public class RunnerController {
     @GetMapping("/runner/{id}/addrunres")
     public String showAddResultForm(@PathVariable Long id, Model model) {
         RunnerEntity runner = runnerRepository.findById(id).orElse(null);
-        model.addAttribute("runner", runner);
-        model.addAttribute("competitions", competitionRepository.findAll());
+        model.addAttribute("runner", runner);                                   //adott a futó
+        model.addAttribute("competitions", competitionRepository.findAll());    //és listából kiválasztható a verseny
         model.addAttribute("result", new ResultEntity());
         return "addrunres";
     }
 
     @PostMapping("/runner/{id}/addrunres")
     public String handleAddResultForm(@PathVariable Long id, @ModelAttribute ResultEntity result) {
+        ResultEntity newResult = new ResultEntity();
         RunnerEntity runner = runnerRepository.findById(id).orElse(null);
         if (runner != null) {
-            result.setRunner(runner);
-            resultRepository.save(result);
+            newResult.setRunner(runner);
+            newResult.setCompetition(result.getCompetition());
+            newResult.setResult(result.getResult());
+            resultRepository.save(newResult);
         }
         return "redirect:/runner/" + id;
     }

@@ -52,23 +52,20 @@ public class CompetitionController {
     @GetMapping("/comp/{id}/addcompres")
     public String showAddResultForm(@PathVariable int id, Model model) {
         CompetitionEntity competition = competitionRepository.findById((long)id).orElse(null);
-        model.addAttribute("competition", competition);
-        model.addAttribute("runners", runnerRepository.findAll());
+        model.addAttribute("competition", competition);                  //adott a verseny
+        model.addAttribute("runners", runnerRepository.findAll());      //és listából kiválasztható a futó
         model.addAttribute("result", new ResultEntity());
         return "addcompres";
     }
 
     @PostMapping("/comp/{id}/addcompres")
-    public ResponseEntity handleAddResultForm(@PathVariable int id, @ModelAttribute ResultEntity result) {
-        CompetitionEntity competition = competitionRepository.findById((long)id).orElse(null);
-        if (competition != null) {
-            result.setCompetition(competition);
-            resultRepository.save(result);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nincs ilyen verseny:" + id + "!");
-        }
-//        return "redirect:/comp/" + id;
+    public String handleAddResultForm(@PathVariable int id, @ModelAttribute ResultEntity result) {
+        ResultEntity newResult = new ResultEntity();
+        newResult.setCompetition(competitionRepository.findById((long) id).orElse(null));
+        newResult.setRunner(result.getRunner());
+        newResult.setResult(result.getResult());
+        resultRepository.save(newResult);
+        return "redirect:/comp/" + id;
     }
 
 }
